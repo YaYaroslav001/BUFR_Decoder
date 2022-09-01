@@ -26,6 +26,4 @@ BUFR (Binary Universal Form for Representation meteorological data) - Двоич
 
 ![image](https://user-images.githubusercontent.com/83878144/187885967-86f41140-1e9c-448f-999e-4e1cc6ee7bf9.png)
 
-Полное руководство по работе с сообщениями BUFR:
-
-[306_Vol_I.2_2009_ru.pdf](https://github.com/YaYaroslav001/BUFR_Decoder/files/9468895/306_Vol_I.2_2009_ru.pdf)
+Полное руководство по работе с сообщениями BUFR: [306_Vol_I.2_2009_ru.pdf](https://github.com/YaYaroslav001/BUFR_Decoder/files/9468895/306_Vol_I.2_2009_ru.pdf)
