@@ -1,6 +1,6 @@
-/*Прикладная программа для расшифровки сообщений BUFR
+/*РџСЂРёРєР»Р°РґРЅР°СЏ РїСЂРѕРіСЂР°РјРјР° РґР»СЏ СЂР°СЃС€РёС„СЂРѕРІРєРё СЃРѕРѕР±С‰РµРЅРёР№ BUFR
 (Binary Universal Form for Representation meteorological data),
-полученных на основе изученной информации о погоде, для последующей обработки и хранения.*/
+РїРѕР»СѓС‡РµРЅРЅС‹С… РЅР° РѕСЃРЅРѕРІРµ РёР·СѓС‡РµРЅРЅРѕР№ РёРЅС„РѕСЂРјР°С†РёРё Рѕ РїРѕРіРѕРґРµ, РґР»СЏ РїРѕСЃР»РµРґСѓСЋС‰РµР№ РѕР±СЂР°Р±РѕС‚РєРё Рё С…СЂР°РЅРµРЅРёСЏ.*/
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <iostream>
@@ -17,71 +17,71 @@
 
 using namespace std;
 
-char symb = 0;                              //Временный символ
-unsigned int byte = 0;                      //Номер байта
-unsigned int bit = 0;                       //Номер бита
-string text = "CCITTIA5                ";   //Проверка дескриптора на текст
+char symb = 0;                              //Р’СЂРµРјРµРЅРЅС‹Р№ СЃРёРјРІРѕР»
+unsigned int byte = 0;                      //РќРѕРјРµСЂ Р±Р°Р№С‚Р°
+unsigned int bit = 0;                       //РќРѕРјРµСЂ Р±РёС‚Р°
+string text = "CCITTIA5                ";   //РџСЂРѕРІРµСЂРєР° РґРµСЃРєСЂРёРїС‚РѕСЂР° РЅР° С‚РµРєСЃС‚
 int sum = 0;
-string B;                                   //Кодовая таблица B
-string D;                                   //Кодовая таблица D
-string buf;                                 //Строка с сообщением
-ofstream output;                            //Файл с расшифрованным сообщением
+string B;                                   //РљРѕРґРѕРІР°СЏ С‚Р°Р±Р»РёС†Р° B
+string D;                                   //РљРѕРґРѕРІР°СЏ С‚Р°Р±Р»РёС†Р° D
+string buf;                                 //РЎС‚СЂРѕРєР° СЃ СЃРѕРѕР±С‰РµРЅРёРµРј
+ofstream output;                            //Р¤Р°Р№Р» СЃ СЂР°СЃС€РёС„СЂРѕРІР°РЅРЅС‹Рј СЃРѕРѕР±С‰РµРЅРёРµРј
 
-class BUFR                                  //Класс BUFR
+class BUFR                                  //РљР»Р°СЃСЃ BUFR
 {
 
 private:
-    struct descriptor                       //Структура дескриптора
+    struct descriptor                       //РЎС‚СЂСѓРєС‚СѓСЂР° РґРµСЃРєСЂРёРїС‚РѕСЂР°
     {
         unsigned short F = 0;
         unsigned short X = 0;
         unsigned short Y = 0;
     };
 
-    int section_0_start;                    //Начало 0 раздела
-    int message_length;                     //Общая длина сообщения BUFR
-    int BUFR_version;                       //Номер издания BUFR (3 или 4)
+    int section_0_start;                    //РќР°С‡Р°Р»Рѕ 0 СЂР°Р·РґРµР»Р°
+    int message_length;                     //РћР±С‰Р°СЏ РґР»РёРЅР° СЃРѕРѕР±С‰РµРЅРёСЏ BUFR
+    int BUFR_version;                       //РќРѕРјРµСЂ РёР·РґР°РЅРёСЏ BUFR (3 РёР»Рё 4)
 
-    int section_1_start;                    //Начало 1 раздела
-    int section_1_length;                   //Длина 1 раздела
-    int e_table;                            //Эталонная таблица кода BUFR
-    int center_ident;                       //Идентификация центра — поставщика/производителя продукции
-    int subcenter_ident;                    //Идентификация подцентра — поставщика/производителя продукции
-    int update_number;                      //Последовательный номер обновления
-    bool optional_section;                  //Необязательный раздел
-    int data_category;                      //Категория данных
-    int data_subcategory;                   //Международная подкатегория данных
-    int local_data_subcategory;             //Локальная подкатегория данных
-    int e_table_version;                    //Номер версии эталонной таблицы
-    int local_table_version;                //Номер версии местных таблиц, применяемых для расширения используемых эталонных таблиц
-    int year;                               //Год
-    int month;                              //Месяц
-    int day;                                //День
-    int hour;                               //Час
-    int minute;                             //Минута
-    int second;                             //Секунда
+    int section_1_start;                    //РќР°С‡Р°Р»Рѕ 1 СЂР°Р·РґРµР»Р°
+    int section_1_length;                   //Р”Р»РёРЅР° 1 СЂР°Р·РґРµР»Р°
+    int e_table;                            //Р­С‚Р°Р»РѕРЅРЅР°СЏ С‚Р°Р±Р»РёС†Р° РєРѕРґР° BUFR
+    int center_ident;                       //РРґРµРЅС‚РёС„РёРєР°С†РёСЏ С†РµРЅС‚СЂР° вЂ” РїРѕСЃС‚Р°РІС‰РёРєР°/РїСЂРѕРёР·РІРѕРґРёС‚РµР»СЏ РїСЂРѕРґСѓРєС†РёРё
+    int subcenter_ident;                    //РРґРµРЅС‚РёС„РёРєР°С†РёСЏ РїРѕРґС†РµРЅС‚СЂР° вЂ” РїРѕСЃС‚Р°РІС‰РёРєР°/РїСЂРѕРёР·РІРѕРґРёС‚РµР»СЏ РїСЂРѕРґСѓРєС†РёРё
+    int update_number;                      //РџРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅС‹Р№ РЅРѕРјРµСЂ РѕР±РЅРѕРІР»РµРЅРёСЏ
+    bool optional_section;                  //РќРµРѕР±СЏР·Р°С‚РµР»СЊРЅС‹Р№ СЂР°Р·РґРµР»
+    int data_category;                      //РљР°С‚РµРіРѕСЂРёСЏ РґР°РЅРЅС‹С…
+    int data_subcategory;                   //РњРµР¶РґСѓРЅР°СЂРѕРґРЅР°СЏ РїРѕРґРєР°С‚РµРіРѕСЂРёСЏ РґР°РЅРЅС‹С…
+    int local_data_subcategory;             //Р›РѕРєР°Р»СЊРЅР°СЏ РїРѕРґРєР°С‚РµРіРѕСЂРёСЏ РґР°РЅРЅС‹С…
+    int e_table_version;                    //РќРѕРјРµСЂ РІРµСЂСЃРёРё СЌС‚Р°Р»РѕРЅРЅРѕР№ С‚Р°Р±Р»РёС†С‹
+    int local_table_version;                //РќРѕРјРµСЂ РІРµСЂСЃРёРё РјРµСЃС‚РЅС‹С… С‚Р°Р±Р»РёС†, РїСЂРёРјРµРЅСЏРµРјС‹С… РґР»СЏ СЂР°СЃС€РёСЂРµРЅРёСЏ РёСЃРїРѕР»СЊР·СѓРµРјС‹С… СЌС‚Р°Р»РѕРЅРЅС‹С… С‚Р°Р±Р»РёС†
+    int year;                               //Р“РѕРґ
+    int month;                              //РњРµСЃСЏС†
+    int day;                                //Р”РµРЅСЊ
+    int hour;                               //Р§Р°СЃ
+    int minute;                             //РњРёРЅСѓС‚Р°
+    int second;                             //РЎРµРєСѓРЅРґР°
 
-    int section_2_start;                    //Начало 2 раздела
-    int section_2_length;                   //Длина 2 раздела
+    int section_2_start;                    //РќР°С‡Р°Р»Рѕ 2 СЂР°Р·РґРµР»Р°
+    int section_2_length;                   //Р”Р»РёРЅР° 2 СЂР°Р·РґРµР»Р°
 
-    int section_3_start;                    //Начало 3 раздела
-    int section_3_length;                   //Длина 3 раздела
-    int subset_quantity;                    //Кол-во поднаборов данных
-    bool data_type = 0;                     //Тип данных
-    bool compression = 0;                   //Сжатый/не сжатый 4-й раздел
+    int section_3_start;                    //РќР°С‡Р°Р»Рѕ 3 СЂР°Р·РґРµР»Р°
+    int section_3_length;                   //Р”Р»РёРЅР° 3 СЂР°Р·РґРµР»Р°
+    int subset_quantity;                    //РљРѕР»-РІРѕ РїРѕРґРЅР°Р±РѕСЂРѕРІ РґР°РЅРЅС‹С…
+    bool data_type = 0;                     //РўРёРї РґР°РЅРЅС‹С…
+    bool compression = 0;                   //РЎР¶Р°С‚С‹Р№/РЅРµ СЃР¶Р°С‚С‹Р№ 4-Р№ СЂР°Р·РґРµР»
 
-    int section_4_start;                    //Начало 4 раздела
-    int section_4_length;                   //Длина 4 раздела
+    int section_4_start;                    //РќР°С‡Р°Р»Рѕ 4 СЂР°Р·РґРµР»Р°
+    int section_4_length;                   //Р”Р»РёРЅР° 4 СЂР°Р·РґРµР»Р°
 
-    int section_5_start;                    //Начало 5 раздела
+    int section_5_start;                    //РќР°С‡Р°Р»Рѕ 5 СЂР°Р·РґРµР»Р°
 
 public:
 
-    void set_0_start(int i)                 //Определение начала сообщения
+    void set_0_start(int i)                 //РћРїСЂРµРґРµР»РµРЅРёРµ РЅР°С‡Р°Р»Р° СЃРѕРѕР±С‰РµРЅРёСЏ
     {
         section_0_start = i;
     }
-    void set_0_length()                     //Определение длины сообщения
+    void set_0_length()                     //РћРїСЂРµРґРµР»РµРЅРёРµ РґР»РёРЅС‹ СЃРѕРѕР±С‰РµРЅРёСЏ
     {
         unsigned char a, b, c;
         int i = 0;
@@ -94,28 +94,28 @@ public:
 
         message_length = i;
     }
-    int get_length()                        //Возвращение длины сообщения
+    int get_length()                        //Р’РѕР·РІСЂР°С‰РµРЅРёРµ РґР»РёРЅС‹ СЃРѕРѕР±С‰РµРЅРёСЏ
     {
         return message_length;
     }
-    void set_BUFR_version()                 //Определения версии сообщения
+    void set_BUFR_version()                 //РћРїСЂРµРґРµР»РµРЅРёСЏ РІРµСЂСЃРёРё СЃРѕРѕР±С‰РµРЅРёСЏ
     {
         BUFR_version = int(buf[section_0_start + 7]);
     }
-    void section_0_output()                 //Вывод первого раздела в консоль
+    void section_0_output()                 //Р’С‹РІРѕРґ РїРµСЂРІРѕРіРѕ СЂР°Р·РґРµР»Р° РІ РєРѕРЅСЃРѕР»СЊ
     {
-        cout << "\nBUFR " << endl << "Версия: " << BUFR_version << endl;
-        cout << "Длина сообщения: " << message_length << endl;
+        cout << "\nBUFR " << endl << "Р’РµСЂСЃРёСЏ: " << BUFR_version << endl;
+        cout << "Р”Р»РёРЅР° СЃРѕРѕР±С‰РµРЅРёСЏ: " << message_length << endl;
     }
-    int get_version()                       //Возвращение версии сообщения
+    int get_version()                       //Р’РѕР·РІСЂР°С‰РµРЅРёРµ РІРµСЂСЃРёРё СЃРѕРѕР±С‰РµРЅРёСЏ
     {
         return BUFR_version;
     }
-    void set_1_start()                      //Определение начала 1 раздела
+    void set_1_start()                      //РћРїСЂРµРґРµР»РµРЅРёРµ РЅР°С‡Р°Р»Р° 1 СЂР°Р·РґРµР»Р°
     {
         section_1_start = section_0_start + 8;
     }
-    void set_1_length()                     //Определение длины 1 раздела
+    void set_1_length()                     //РћРїСЂРµРґРµР»РµРЅРёРµ РґР»РёРЅС‹ 1 СЂР°Р·РґРµР»Р°
     {
         unsigned char a, b, c;
         int i = 0;
@@ -128,11 +128,11 @@ public:
 
         section_1_length = i;
     }
-    void set_e_table()                      //Определение эталонных таблиц
+    void set_e_table()                      //РћРїСЂРµРґРµР»РµРЅРёРµ СЌС‚Р°Р»РѕРЅРЅС‹С… С‚Р°Р±Р»РёС†
     {
         e_table = buf[section_1_start + 3];
     }
-    void set_center_ident()                 //Определение центра
+    void set_center_ident()                 //РћРїСЂРµРґРµР»РµРЅРёРµ С†РµРЅС‚СЂР°
     {
         unsigned char a, b;
         int i = 0;
@@ -144,7 +144,7 @@ public:
 
         center_ident = i;
     }
-    void set_subcenter_ident()              //Определение подцентра
+    void set_subcenter_ident()              //РћРїСЂРµРґРµР»РµРЅРёРµ РїРѕРґС†РµРЅС‚СЂР°
     {
         unsigned char a, b;
         int i = 0;
@@ -156,11 +156,11 @@ public:
 
         subcenter_ident = i;
     }
-    void set_update_number()                //Определение последовательного номера обновления
+    void set_update_number()                //РћРїСЂРµРґРµР»РµРЅРёРµ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕРіРѕ РЅРѕРјРµСЂР° РѕР±РЅРѕРІР»РµРЅРёСЏ
     {
         update_number = buf[section_1_start + 8];
     }
-    void set_optional_section()             //Определение наличия необязательного раздела
+    void set_optional_section()             //РћРїСЂРµРґРµР»РµРЅРёРµ РЅР°Р»РёС‡РёСЏ РЅРµРѕР±СЏР·Р°С‚РµР»СЊРЅРѕРіРѕ СЂР°Р·РґРµР»Р°
     {
         unsigned char c = buf[section_1_start + 9];
         if ((c >> 7) == 1)
@@ -169,27 +169,27 @@ public:
             if ((c >> 7) == 0)
                 optional_section = 0;
     }
-    void set_data_category()                //Определение категории данных
+    void set_data_category()                //РћРїСЂРµРґРµР»РµРЅРёРµ РєР°С‚РµРіРѕСЂРёРё РґР°РЅРЅС‹С…
     {
         data_category = buf[section_1_start + 10];
     }
-    void set_data_subcategory()             //Определение подкатегории данных
+    void set_data_subcategory()             //РћРїСЂРµРґРµР»РµРЅРёРµ РїРѕРґРєР°С‚РµРіРѕСЂРёРё РґР°РЅРЅС‹С…
     {
         data_subcategory = buf[section_1_start + 11];
     }
-    void set_local_data_subcategory()       //Определение локальной подкатегории данных
+    void set_local_data_subcategory()       //РћРїСЂРµРґРµР»РµРЅРёРµ Р»РѕРєР°Р»СЊРЅРѕР№ РїРѕРґРєР°С‚РµРіРѕСЂРёРё РґР°РЅРЅС‹С…
     {
         local_data_subcategory = buf[section_1_start + 12];
     }
-    void set_e_table_version()              //Определение версии эталонных таблиц
+    void set_e_table_version()              //РћРїСЂРµРґРµР»РµРЅРёРµ РІРµСЂСЃРёРё СЌС‚Р°Р»РѕРЅРЅС‹С… С‚Р°Р±Р»РёС†
     {
         e_table_version = buf[section_1_start + 13];
     }
-    void set_local_table_version()          //Определение версии местных таблиц
+    void set_local_table_version()          //РћРїСЂРµРґРµР»РµРЅРёРµ РІРµСЂСЃРёРё РјРµСЃС‚РЅС‹С… С‚Р°Р±Р»РёС†
     {
         local_table_version = buf[section_1_start + 14];
     }
-    void set_date_time()                    //Определение даты и времени
+    void set_date_time()                    //РћРїСЂРµРґРµР»РµРЅРёРµ РґР°С‚С‹ Рё РІСЂРµРјРµРЅРё
     {
         unsigned char a, b;
         int i = 0;
@@ -210,35 +210,35 @@ public:
 
         second = buf[section_1_start + 21];
     }
-    void section_1_output()                 //Вывод первого раздела в консоль
+    void section_1_output()                 //Р’С‹РІРѕРґ РїРµСЂРІРѕРіРѕ СЂР°Р·РґРµР»Р° РІ РєРѕРЅСЃРѕР»СЊ
     {
-        cout << "Длина секции: " << section_1_length << endl;
-        cout << "Номер основной таблицы: " << e_table;
+        cout << "Р”Р»РёРЅР° СЃРµРєС†РёРё: " << section_1_length << endl;
+        cout << "РќРѕРјРµСЂ РѕСЃРЅРѕРІРЅРѕР№ С‚Р°Р±Р»РёС†С‹: " << e_table;
         if (e_table == 0)
-            cout << " Метеорология, поддерживаемая Всемирной Метеорологической Организацией (ВМО)";
+            cout << " РњРµС‚РµРѕСЂРѕР»РѕРіРёСЏ, РїРѕРґРґРµСЂР¶РёРІР°РµРјР°СЏ Р’СЃРµРјРёСЂРЅРѕР№ РњРµС‚РµРѕСЂРѕР»РѕРіРёС‡РµСЃРєРѕР№ РћСЂРіР°РЅРёР·Р°С†РёРµР№ (Р’РњРћ)";
         if (e_table == 10)
-            cout << " Океанография, поддерживаемая Международной океанографической комиссией (МОК)";
+            cout << " РћРєРµР°РЅРѕРіСЂР°С„РёСЏ, РїРѕРґРґРµСЂР¶РёРІР°РµРјР°СЏ РњРµР¶РґСѓРЅР°СЂРѕРґРЅРѕР№ РѕРєРµР°РЅРѕРіСЂР°С„РёС‡РµСЃРєРѕР№ РєРѕРјРёСЃСЃРёРµР№ (РњРћРљ)";
         cout << endl;
         center_output(center_ident, subcenter_ident);
-        cout << "Последовательный номер обновления: " << update_number << endl;
-        cout << "Необязательный раздел: ";
+        cout << "РџРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅС‹Р№ РЅРѕРјРµСЂ РѕР±РЅРѕРІР»РµРЅРёСЏ: " << update_number << endl;
+        cout << "РќРµРѕР±СЏР·Р°С‚РµР»СЊРЅС‹Р№ СЂР°Р·РґРµР»: ";
         if (optional_section == 1)
-            cout << "есть";
-        else cout << "нет";
+            cout << "РµСЃС‚СЊ";
+        else cout << "РЅРµС‚";
         cout << endl;
         data_cat_output(data_category, data_subcategory);
-        cout << "Локальная подкатегория данных: " << local_data_subcategory << endl;
-        cout << "Номер версии основной таблицы: " << e_table_version << endl;
-        cout << "Номер версии местной таблицы: " << local_table_version << endl;
-        cout << "Дата: " << day << "/" << month << "/" << year << "   Время: " << hour << ":" << month << ":" << second << endl;
+        cout << "Р›РѕРєР°Р»СЊРЅР°СЏ РїРѕРґРєР°С‚РµРіРѕСЂРёСЏ РґР°РЅРЅС‹С…: " << local_data_subcategory << endl;
+        cout << "РќРѕРјРµСЂ РІРµСЂСЃРёРё РѕСЃРЅРѕРІРЅРѕР№ С‚Р°Р±Р»РёС†С‹: " << e_table_version << endl;
+        cout << "РќРѕРјРµСЂ РІРµСЂСЃРёРё РјРµСЃС‚РЅРѕР№ С‚Р°Р±Р»РёС†С‹: " << local_table_version << endl;
+        cout << "Р”Р°С‚Р°: " << day << "/" << month << "/" << year << "   Р’СЂРµРјСЏ: " << hour << ":" << month << ":" << second << endl;
     }
 
-    void set_2_start()                      //Определение начала 2 раздела
+    void set_2_start()                      //РћРїСЂРµРґРµР»РµРЅРёРµ РЅР°С‡Р°Р»Р° 2 СЂР°Р·РґРµР»Р°
     {
         section_2_start = section_1_start + section_1_length;
     }
 
-    void set_2_length()                     //Определение длины 2 раздела
+    void set_2_length()                     //РћРїСЂРµРґРµР»РµРЅРёРµ РґР»РёРЅС‹ 2 СЂР°Р·РґРµР»Р°
     {
         unsigned char a, b, c;
         int i = 0;
@@ -255,12 +255,12 @@ public:
         section_2_length = i;
     }
 
-    void section_2_output()                 //Вывод второго раздела в консоль
+    void section_2_output()                 //Р’С‹РІРѕРґ РІС‚РѕСЂРѕРіРѕ СЂР°Р·РґРµР»Р° РІ РєРѕРЅСЃРѕР»СЊ
     {
-        cout << "Длина секции: " << section_2_length;
+        cout << "Р”Р»РёРЅР° СЃРµРєС†РёРё: " << section_2_length;
     }
 
-    void set_3_start()                      //Определение начала 3 раздела
+    void set_3_start()                      //РћРїСЂРµРґРµР»РµРЅРёРµ РЅР°С‡Р°Р»Р° 3 СЂР°Р·РґРµР»Р°
     {
         if (optional_section == 1)
             section_3_start = section_2_start + section_2_length;
@@ -268,7 +268,7 @@ public:
             section_3_start = section_2_start;
     }
 
-    void set_3_length()                     //Определение длиы 3 раздела
+    void set_3_length()                     //РћРїСЂРµРґРµР»РµРЅРёРµ РґР»РёС‹ 3 СЂР°Р·РґРµР»Р°
     {
         unsigned char a, b, c;
         int i = 0;
@@ -282,7 +282,7 @@ public:
         section_3_length = i;
     }
 
-    void set_subset_quantity()              //Определение кол-ва поднаборов данных
+    void set_subset_quantity()              //РћРїСЂРµРґРµР»РµРЅРёРµ РєРѕР»-РІР° РїРѕРґРЅР°Р±РѕСЂРѕРІ РґР°РЅРЅС‹С…
     {
         unsigned char a, b;
         int i = 0;
@@ -295,38 +295,38 @@ public:
         subset_quantity = i;
     }
 
-    void set_data_type()                    //Данные наблюдения/Другие данные
+    void set_data_type()                    //Р”Р°РЅРЅС‹Рµ РЅР°Р±Р»СЋРґРµРЅРёСЏ/Р”СЂСѓРіРёРµ РґР°РЅРЅС‹Рµ
     {
         if (buf[section_3_start + 6] &= 0x70)
             data_type = 1;
     }
 
-    void set_compression()                  //Определение сжатия 4-го раздела
+    void set_compression()                  //РћРїСЂРµРґРµР»РµРЅРёРµ СЃР¶Р°С‚РёСЏ 4-РіРѕ СЂР°Р·РґРµР»Р°
     {
         if (buf[section_3_start + 6] &= 0x60)
             compression = 1;
     }
 
-    void section_3_output()                 //Вывод 3-го раздела в консоль
+    void section_3_output()                 //Р’С‹РІРѕРґ 3-РіРѕ СЂР°Р·РґРµР»Р° РІ РєРѕРЅСЃРѕР»СЊ
     {
-        cout << "Длина секции: " << section_3_length << endl;
-        cout << "Кол-во поднаборов данных: " << subset_quantity << endl;
+        cout << "Р”Р»РёРЅР° СЃРµРєС†РёРё: " << section_3_length << endl;
+        cout << "РљРѕР»-РІРѕ РїРѕРґРЅР°Р±РѕСЂРѕРІ РґР°РЅРЅС‹С…: " << subset_quantity << endl;
         if (data_type == 1)
-            cout << "Друние данные." << endl;
+            cout << "Р”СЂСѓРЅРёРµ РґР°РЅРЅС‹Рµ." << endl;
         else
-            cout << "Данные наблюдения." << endl;
+            cout << "Р”Р°РЅРЅС‹Рµ РЅР°Р±Р»СЋРґРµРЅРёСЏ." << endl;
         if (compression == 1)
-            cout << "Сжатые данные." << endl;
+            cout << "РЎР¶Р°С‚С‹Рµ РґР°РЅРЅС‹Рµ." << endl;
         else
-            cout << "Данные без сжатия." << endl;
+            cout << "Р”Р°РЅРЅС‹Рµ Р±РµР· СЃР¶Р°С‚РёСЏ." << endl;
     }
 
-    void set_4_start()                      //Определение начала 4-го раздела
+    void set_4_start()                      //РћРїСЂРµРґРµР»РµРЅРёРµ РЅР°С‡Р°Р»Р° 4-РіРѕ СЂР°Р·РґРµР»Р°
     {
         section_4_start = section_3_start + section_3_length;
     }
 
-    void set_4_length()                     //Определение длины 4-го раздела
+    void set_4_length()                     //РћРїСЂРµРґРµР»РµРЅРёРµ РґР»РёРЅС‹ 4-РіРѕ СЂР°Р·РґРµР»Р°
     {
         unsigned char a, b, c;
         int i = 0;
@@ -340,12 +340,12 @@ public:
         section_4_length = i;
     }
 
-    void section_4_output()                 //Вывод 4-го раздела в консоль
+    void section_4_output()                 //Р’С‹РІРѕРґ 4-РіРѕ СЂР°Р·РґРµР»Р° РІ РєРѕРЅСЃРѕР»СЊ
     {
-        cout << "Длина секции: " << section_4_length << endl << endl;
+        cout << "Р”Р»РёРЅР° СЃРµРєС†РёРё: " << section_4_length << endl << endl;
     }
 
-    int decoder(unsigned short F, unsigned short X, unsigned short Y)   //Работа с дескриптором
+    int decoder(unsigned short F, unsigned short X, unsigned short Y)   //Р Р°Р±РѕС‚Р° СЃ РґРµСЃРєСЂРёРїС‚РѕСЂРѕРј
     {
         long long k = 0;
         int i = 0;
@@ -356,12 +356,12 @@ public:
 
         if (F == 0)
         {
-            string find;                                        //Поиск дескриптора в таблицах
-            string description, unit;                           //Название элемента, единица измерения
-            int scale = 0, referance = 0, bit_length = 0;       //Масштаб, начало отсчёта, длина данных (бит)
-            long long long_long_value = 0;                      //Начальное значение
-            long double double_value = 0;                       //Вычисленное значение
-            unsigned char temp_symb = 0;                        //Временный символ
+            string find;                                        //РџРѕРёСЃРє РґРµСЃРєСЂРёРїС‚РѕСЂР° РІ С‚Р°Р±Р»РёС†Р°С…
+            string description, unit;                           //РќР°Р·РІР°РЅРёРµ СЌР»РµРјРµРЅС‚Р°, РµРґРёРЅРёС†Р° РёР·РјРµСЂРµРЅРёСЏ
+            int scale = 0, referance = 0, bit_length = 0;       //РњР°СЃС€С‚Р°Р±, РЅР°С‡Р°Р»Рѕ РѕС‚СЃС‡С‘С‚Р°, РґР»РёРЅР° РґР°РЅРЅС‹С… (Р±РёС‚)
+            long long long_long_value = 0;                      //РќР°С‡Р°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ
+            long double double_value = 0;                       //Р’С‹С‡РёСЃР»РµРЅРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ
+            unsigned char temp_symb = 0;                        //Р’СЂРµРјРµРЅРЅС‹Р№ СЃРёРјРІРѕР»
             string str_value;
             string f = to_string(F), x = to_string(X), y = to_string(Y);
 
@@ -377,7 +377,7 @@ public:
             //output << find << endl;
             output << f << " " << x << " " << y << endl;
 
-            while (B.substr(k + 1, 6) != find)    //Поиск дескриптора в кодовой таблице B
+            while (B.substr(k + 1, 6) != find)    //РџРѕРёСЃРє РґРµСЃРєСЂРёРїС‚РѕСЂР° РІ РєРѕРґРѕРІРѕР№ С‚Р°Р±Р»РёС†Рµ B
             {
                 while (B[k] != '\n')
                 {
@@ -385,7 +385,7 @@ public:
                 }
                 k++;
             }
-            /*while (B.substr(k, 6) != find)    //Поиск дескриптора в кодовой таблице B
+            /*while (B.substr(k, 6) != find)    //РџРѕРёСЃРє РґРµСЃРєСЂРёРїС‚РѕСЂР° РІ РєРѕРґРѕРІРѕР№ С‚Р°Р±Р»РёС†Рµ B
             {
                 ++k;
             }
@@ -397,7 +397,7 @@ public:
             bit_length = stoi(B.substr(k + 115, 3));
             output << description;
             sum += bit_length;
-            if (!strcmp(unit.c_str(), text.c_str()))    //Если единица измерения это МККТТ–МА5, то расшифровывается текст, иначе число
+            if (!strcmp(unit.c_str(), text.c_str()))    //Р•СЃР»Рё РµРґРёРЅРёС†Р° РёР·РјРµСЂРµРЅРёСЏ СЌС‚Рѕ РњРљРљРўРўвЂ“РњРђ5, С‚Рѕ СЂР°СЃС€РёС„СЂРѕРІС‹РІР°РµС‚СЃСЏ С‚РµРєСЃС‚, РёРЅР°С‡Рµ С‡РёСЃР»Рѕ
             {
                 for (p = 0; p < bit_length/8; p++)
                 {
@@ -467,7 +467,7 @@ public:
             cout << find << endl;
             //output << find << endl;
 
-            while ((D.substr(k + 1, 6) != find)&&(D[k] != '\0'))    //Поиск элемента в кодовой таблице D
+            while ((D.substr(k + 1, 6) != find)&&(D[k] != '\0'))    //РџРѕРёСЃРє СЌР»РµРјРµРЅС‚Р° РІ РєРѕРґРѕРІРѕР№ С‚Р°Р±Р»РёС†Рµ D
             {
                 while (D[k] != '\n')
                 {
@@ -491,7 +491,7 @@ public:
             }
             for (p = 0; p < i; p++)
             {
-                if (desc[p].F == 1)     //Работа с дескриптором повторения
+                if (desc[p].F == 1)     //Р Р°Р±РѕС‚Р° СЃ РґРµСЃРєСЂРёРїС‚РѕСЂРѕРј РїРѕРІС‚РѕСЂРµРЅРёСЏ
                 {
                     cout << "F = " << desc[p+1].F << " X = " << desc[p+1].X << " Y = " << desc[p+1].Y << endl;
                     if (desc[p].Y == 0)
@@ -541,12 +541,12 @@ public:
             desc[i].X = (unsigned short)(a);
             a = buf[section_3_start + 7 + k + 1];
             desc[i].Y = (unsigned short)(a);
-            cout << "content_read №" << i + 1 <<  ": F = " << desc[i].F << " X = " << desc[i].X << " Y = " << desc[i].Y << endl;
+            cout << "content_read в„–" << i + 1 <<  ": F = " << desc[i].F << " X = " << desc[i].X << " Y = " << desc[i].Y << endl;
             k += 2;
         }
         for (i = 0; i < subset_quantity; i++)
         {
-            if (desc[i].F == 1)     //Работа с дескриптором повторения
+            if (desc[i].F == 1)     //Р Р°Р±РѕС‚Р° СЃ РґРµСЃРєСЂРёРїС‚РѕСЂРѕРј РїРѕРІС‚РѕСЂРµРЅРёСЏ
             {
                 if (desc[i].Y == 0)
                 {
@@ -600,14 +600,14 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-int MainWindow::on_pushButton_clicked()     //Нажатие кнопки "Выбрать файл"
+int MainWindow::on_pushButton_clicked()     //РќР°Р¶Р°С‚РёРµ РєРЅРѕРїРєРё "Р’С‹Р±СЂР°С‚СЊ С„Р°Р№Р»"
 {
     QFileDialog *dialog = new QFileDialog;
     QString qstr;
     qstr = dialog->getOpenFileName(0);
     string str = qstr.toLocal8Bit().constData();
 
-    if (str.length() == 0) return 1;        //Завершение работы функции, если файл не выбран
+    if (str.length() == 0) return 1;        //Р—Р°РІРµСЂС€РµРЅРёРµ СЂР°Р±РѕС‚С‹ С„СѓРЅРєС†РёРё, РµСЃР»Рё С„Р°Р№Р» РЅРµ РІС‹Р±СЂР°РЅ
 
     unsigned long long k = 0;
     setlocale(LC_ALL, "RUS");
@@ -626,13 +626,13 @@ int MainWindow::on_pushButton_clicked()     //Нажатие кнопки "Выбрать файл"
     buf.assign((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
     while (!fileB.eof())
-    {  // прочитали его и заполнили им строку
+    {  // РїСЂРѕС‡РёС‚Р°Р»Рё РµРіРѕ Рё Р·Р°РїРѕР»РЅРёР»Рё РёРј СЃС‚СЂРѕРєСѓ
         fileB.get(c);
         B.push_back(c);
     }
 
     while (!fileD.eof())
-    {  // прочитали его и заполнили им строку
+    {  // РїСЂРѕС‡РёС‚Р°Р»Рё РµРіРѕ Рё Р·Р°РїРѕР»РЅРёР»Рё РёРј СЃС‚СЂРѕРєСѓ
         fileD.get(c);
         D.push_back(c);
     }
@@ -704,7 +704,7 @@ int MainWindow::on_pushButton_clicked()     //Нажатие кнопки "Выбрать файл"
             bit = 0;
         }
         else
-            cout << "Версия " << message.get_version() << " не поддерживается!";
+            cout << "Р’РµСЂСЃРёСЏ " << message.get_version() << " РЅРµ РїРѕРґРґРµСЂР¶РёРІР°РµС‚СЃСЏ!";
         /*cout << byte << "  bytes" << endl;
         cout << bit << "  bits" << endl;
         output << byte << "  bytes" << endl;
